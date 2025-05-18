@@ -1,59 +1,182 @@
 {
-    "sense": [
-      {
-        "asset": "temperature",
-        "value": {
-          "byte": 0,
-          "bytelength": 2,
-          "type": "integer",
-          "byteorder": "small",
-          "calculation": "val/100"
-        }
-      },
-      {
-        "asset": "humidity",
-        "value": {
-          "byte": 2,
-          "bytelength": 2,
-          "byteorder": "small",
-          "type": "integer"
-        }
-      },
-      {
-        "asset": "pressure",
-        "value": {
-          "byte": 4,
-          "bytelength": 2,
-          "byteorder": "small",
-          "type": "integer"
-        }
-      },
-      {
-        "asset": "light",
-        "value": {
-          "byte": 6,
-          "bytelength": 1,
-          "signed": false,
-          "type": "integer"
-        }
-      },
-      {
-        "asset": "sound",
-        "value": {
-          "byte": 7,
-          "bytelength": 1,
-          "signed": false,
-          "type": "integer"
-        }
-      },
-      {
-        "asset": "potentiometer",
-        "value": {
-          "byte": 8,
-          "bytelength": 1,
-          "signed": false,
-          "type": "integer"
-        }
+  "sense": [
+    {
+      "asset": "Temperature",
+      "value": {
+        "byte": 0,
+        "bytelength": 2,
+        "type": "integer",
+        "byteorder": "small",
+        "calculation": "val/100"
       }
-    ]
-  }
+    },
+    {
+      "asset": "Sound0",
+      "value": {
+        "byte": 2,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound1",
+      "value": {
+        "byte": 3,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound2",
+      "value": {
+        "byte": 4,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound3",
+      "value": {
+        "byte": 5,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound4",
+      "value": {
+        "byte": 6,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound5",
+      "value": {
+        "byte": 7,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound6",
+      "value": {
+        "byte": 8,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound7",
+      "value": {
+        "byte": 9,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound8",
+      "value": {
+        "byte": 10,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound9",
+      "value": {
+        "byte": 11,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound10",
+      "value": {
+        "byte": 12,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound11",
+      "value": {
+        "byte": 13,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound12",
+      "value": {
+        "byte": 14,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound13",
+      "value": {
+        "byte": 15,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound14",
+      "value": {
+        "byte": 16,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound15",
+      "value": {
+        "byte": 17,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound16",
+      "value": {
+        "byte": 18,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound17",
+      "value": {
+        "byte": 19,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound18",
+      "value": {
+        "byte": 20,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound19",
+      "value": {
+        "byte": 21,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    },
+    {
+      "asset": "Sound20",
+      "value": {
+        "byte": 22,
+        "bytelength": 1,
+        "type": "integer"
+      }
+    }
+  ]
+}
