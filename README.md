@@ -15,6 +15,16 @@ SpaceScope is a proof-of-concept system designed during the Cassini Hackathon to
 
 # System Architecture
 
+[Heartbeat Sound] + [Temperature Sensor]
+        ↓
+     [Arduino + Grove Kit]
+        ↓
+    [Kineis KIM1 Module]
+        ↓
+   [Nano-Satellite Network]
+        ↓
+ [Verhaert Connect (AllThingsTalk)]
+
 
 # Hardware Used
 
@@ -24,6 +34,21 @@ SpaceScope is a proof-of-concept system designed during the Cassini Hackathon to
 - Kineis KIM1 Satellite Module
 - Nano-satellite uplink (Kineis currently with 7 satellites in orbit)
 
+# Software Details
+
+Libraries Required
+
+- KIM_Arduino_Library (from Verhaert)
+- Grove_Temperature_Sensir (From Seeed Studio)
+- Wire.h, SoftwareSerial.h
+
+Core Functionality 
+
+- 60s Interval Transmission: Sends a payload every 60 seconds using Kineis AT Commands
+- Payload Composition:
+    - 2 bytes of temperature 
+    - 21 bytes of sound samples (captured rapidly in a loop)
+    - Encoded into a 23-byte hex string padded to meet KIM1 specs
 
 
  
