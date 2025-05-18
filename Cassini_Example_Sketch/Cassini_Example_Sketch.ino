@@ -1,8 +1,8 @@
 /* 
-Name:        Cassini Hackathons Example Sketch
-Description: Send sensor data from Arduino to Verhaert Connect Platform via Kineis Satellite
-Version:     0.5.9
-Written by:  Vanja S.
+Name:        SpaceScope
+Description: Send HeartBeat Sound data from Arduino to Verhaert Connect Platform via Kineis Satellite
+Version:     1.0.0
+Written by:  Ayush Pradhan and Chaitanya
 Verhaert x AllThingsTalk x Kineis
 Details:
  - Do not use pin number 4. This pin is used to power on/off the Kineis KIM1 module. On the grove starter kit, pin 4 is the LED, so you can observe it to figure if the KIM1 is on or off.
@@ -18,9 +18,7 @@ Details:
 // Pin Definitions for sensors and actuators. Display, BMP280, DHT20 and Accelerometer are I2C.
 #define BUZZER_PIN         5
 #define BUTTON_PIN         6
-#define POTENTIOMETER_PIN  A0
-#define SOUND_SENSOR_PIN   A2
-#define LIGHT_SENSOR_PIN   A6
+#define SOUND_SENSOR_PIN   A1
 
 // Kineis KIM1 AT Commands
 char ID[2]   = "ID";
@@ -35,26 +33,14 @@ const long    kineisTransmissionInterval = 60;    // Seconds; How often to trans
 unsigned long kineisLastTransmissionTime = 0;     // Last time (in ms since boot) a transmission occured
 const long    buttonPressIntervalLimit   = 5;    // Seconds; Minimum delay between button presses that force the data to be sent
 unsigned long lastButtonPressTime        = 0;     // Last time (in ms since boot) the button was pressed
-bool          bmp280initialized          = false;
 bool          kim1initialized            = false;
 
 SoftwareSerial kimSerial(RX_KIM, TX_KIM);
 KIM kineis(&kimSerial);
-BMP280 bmp280;
 DHT dht(DHT20);
 
-byte readLightSensor() {
-  byte value = analogRead(LIGHT_SENSOR_PIN);
-  return map(value, 0, 300, 0, 255);
-}
-
 byte readSoundSensor() {
-  long value = 0;
-  for(int i=0; i<32; i++) {
-    value += analogRead(SOUND_SENSOR_PIN);
-  }
-  value >>= 5;
-  return map(value, 0, 400, 0, 255);
+  return analogRead(SOUND_SENSOR_PIN);
 }
 
 // Piezo buzzer beep with duration in milliseconds
@@ -75,61 +61,44 @@ bool readButton() {
   }
 }
 
-byte readPotentiometer() {
-  int raw = analogRead(POTENTIOMETER_PIN);
-  return map(raw, 0, 1023, 255, 0);
-}
-
 void readAndSendData() {
   Serial.println(F("System - Reading sensor data..."));
   float temperatureRaw = dht.readTemperature();
   int temperature = (int)(temperatureRaw * 100); // We multiple the values below because we then divide them on AllThingsTalk and don't need to send floats which use more data
-  int humidity = (int)dht.readHumidity();
-  int pressure;
-  if (bmp280initialized) {
-    pressure = (int)(bmp280.getPressure()/100); // BMP280 Also has an internal temperature sensor for calibration. It's not good, but you can use it with bmp280.getTemperature();
-  } else {
-    pressure = 0;
-  }
+  // int humidity = (int)dht.readHumidity();
+  // int pressure;
+  // if (bmp280initialized) {
+  //   pressure = (int)(bmp280.getPressure()/100); // BMP280 Also has an internal temperature sensor for calibration. It's not good, but you can use it with bmp280.getTemperature();
+  // } else {
+  //   pressure = 0;
+  // }
   
-  byte light = readLightSensor();
   byte sound = readSoundSensor();
-  byte potentiometer = readPotentiometer(); 
-
-  Serial.print(F("DHT20 - Temperature: "));
+  Serial.print(F("Temperature: "));
   Serial.print(temperatureRaw);
   Serial.println(F("°C"));
   Serial.print(F("DHT20 - Humidity: "));
   Serial.print(humidity);
   Serial.println(F("%"));
-  Serial.print(F("BMP280 - Pressure: "));
-  Serial.print(pressure);
-  Serial.println(F("mbar"));
-  Serial.print(F("Light Sensor - Value: "));
-  Serial.print(light);
-  Serial.println(F("/255"));
   Serial.print(F("Sound Sensor - Value: "));
   Serial.print(sound);
   Serial.println(F("/255"));
-  Serial.print(F("Potentiometer - Value: "));
-  Serial.print(potentiometer);
-  Serial.println(F("/255"));
 
   // Build the payload
-  const int payloadSize = 9;
+  const int payloadSize = 23;
   const int hexPayloadSize = 47; // 45 characters counting from 0 + 2 for termination. 23 bytes is required by Kineis. Padding needs to be done if the payload is smaller.
   byte payload[payloadSize];
   char hexPayload[hexPayloadSize];
 
   payload[0] = ((uint8_t*)&temperature)[0]; // Least significant byte first, little endian
   payload[1] = ((uint8_t*)&temperature)[1];
-  payload[2] = ((uint8_t*)&humidity)[0];
-  payload[3] = ((uint8_t*)&humidity)[1];
-  payload[4] = ((uint8_t*)&pressure)[0];
-  payload[5] = ((uint8_t*)&pressure)[1];
-  payload[6] = light;
-  payload[7] = sound;
-  payload[8] = potentiometer;
+
+  for (int i = 0; i < 21; i++)
+  {
+    int sound = readSoundSensor();
+    Serial.println(sound);
+    payload[i + 2] = sound & 0xFF; 
+  }
 
   for (int i = 0; i < payloadSize; i++) {
     sprintf(&hexPayload[i * 2], "%02X", payload[i]);
@@ -140,7 +109,8 @@ void readAndSendData() {
   hexPayload[hexPayloadSize - 1] = '\0'; // Null terminate
   
   if (kim1initialized) {
-    Serial.print(F("Kineis - Powering on KIM1 and attempting to send payload: "));
+    Serial.print(F("Kineis - Powering on KIM1 and attempting to send payload "));
+    Serial.print(F("DEBUG - Payload to send (hex): "));
     Serial.println(hexPayload);
     kineis.KIM_powerON(true);
     delay(200);
@@ -164,21 +134,10 @@ void initPeripherals() {
   // Initialize pins
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT);
-  pinMode(POTENTIOMETER_PIN, INPUT);
-  pinMode(LIGHT_SENSOR_PIN, INPUT);
   pinMode(SOUND_SENSOR_PIN, INPUT);
 
   // Initialize i2c
   Wire.begin();
-
-  // Initialize BMP280 Pressure Sensor
-  if (!bmp280.init()) {
-    Serial.print(F("BMP280 - Failed to initialize sensor"));
-    bmp280initialized = false;
-  } else {
-    Serial.println(F("BMP280 - Sensor initialized!"));
-    bmp280initialized = true;
-  }
 
   // Initialize DHT20 Sensor
   dht.begin();
@@ -227,15 +186,8 @@ void setup() {
 }
 
 void loop() {
-  if (millis() - kineisLastTransmissionTime >= kineisTransmissionInterval * 1000) {
-    readAndSendData();
-    kineisLastTransmissionTime = millis();
-  }
-  if (readButton() && millis() - lastButtonPressTime >= buttonPressIntervalLimit * 1000) {
-    Serial.println("Button - Pressed");
-    buzzerBeep(50);
-    readAndSendData();
-    kineisLastTransmissionTime = millis();
-    lastButtonPressTime = millis();
-  }
+ 
+  readAndSendData();
+  delay(60000);  // 60 seconds
+ 
 }
