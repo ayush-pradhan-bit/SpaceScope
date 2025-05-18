@@ -15,15 +15,7 @@ SpaceScope is a proof-of-concept system designed during the Cassini Hackathon to
 
 # System Architecture
 
-[Heartbeat Sound] + [Temperature Sensor]
-        ↓
-     [Arduino + Grove Kit]
-        ↓
-    [Kineis KIM1 Module]
-        ↓
-   [Nano-Satellite Network]
-        ↓
- [Verhaert Connect (AllThingsTalk)]
+<pre> [Heartbeat Sound] + [Temperature Sensor] -> [Arduino + Grove Kit] -> [Kineis KIM1 Module] -> [Nano-Satellite Network] -> [Verhaert Connect (AllThingsTalk)] </pre>
 
 
 # Hardware Used
